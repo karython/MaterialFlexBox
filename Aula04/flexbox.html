@@ -1,0 +1,2014 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlexBox Trainer · React Native</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f2ee;
+        --surface: #ede9e3;
+        --card: #faf8f5;
+        --border: #d8d0c4;
+        --border2: #c8bfb2;
+        --text: #1a1612;
+        --muted: #7a7068;
+        --muted2: #5a5248;
+        --accent: #2563eb;
+        --accent-dim: rgba(37, 99, 235, 0.09);
+        --green: #059669;
+        --green-dim: rgba(5, 150, 105, 0.09);
+        --amber: #d97706;
+        --amber-dim: rgba(217, 119, 6, 0.09);
+        --purple: #7c3aed;
+        --purple-dim: rgba(124, 58, 237, 0.09);
+        --red: #dc2626;
+        --red-dim: rgba(220, 38, 38, 0.08);
+        --fd: "Fraunces", serif;
+        --fb: "DM Sans", sans-serif;
+        --fm: "JetBrains Mono", monospace;
+        --r: 9px;
+        --rl: 14px;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 14px rgba(0, 0, 0, 0.05);
+        --shadow-lg:
+          0 2px 8px rgba(0, 0, 0, 0.09), 0 12px 32px rgba(0, 0, 0, 0.07);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--fb);
+        font-size: 16px;
+        line-height: 1.65;
+        min-height: 100vh;
+      }
+      code {
+        font-family: var(--fm);
+        font-size: 13px;
+        background: var(--accent-dim);
+        color: var(--accent);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid rgba(37, 99, 235, 0.15);
+      }
+
+      /* ── HERO ─────────────────────── */
+      #hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      .hgrid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 48px 48px;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .hglow {
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(
+          circle,
+          rgba(37, 99, 235, 0.06) 0%,
+          transparent 65%
+        );
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+      .hbadge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+        font-family: var(--fm);
+        padding: 5px 16px;
+        border-radius: 99px;
+        border: 1px solid var(--border2);
+        color: var(--accent);
+        background: var(--card);
+        margin-bottom: 1.6rem;
+        animation: fu 0.5s ease both;
+        box-shadow: var(--shadow);
+      }
+      .hbdot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green);
+        animation: pulse 2s infinite;
+      }
+      .htitle {
+        font-family: var(--fd);
+        font-size: clamp(4rem, 12vw, 8.5rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        text-align: center;
+        line-height: 0.95;
+        margin-bottom: 0.5rem;
+        animation: fu 0.5s 0.1s ease both;
+        color: var(--text);
+      }
+      .htitle em {
+        color: var(--accent);
+        font-style: normal;
+      }
+      .hsub {
+        font-size: 18px;
+        color: var(--muted2);
+        text-align: center;
+        margin-bottom: 2.2rem;
+        animation: fu 0.5s 0.15s ease both;
+        font-weight: 400;
+      }
+      .hdemo {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1rem;
+        animation: fu 0.5s 0.2s ease both;
+        transition: all 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--rl);
+        padding: 16px;
+        box-shadow: var(--shadow);
+        min-width: 240px;
+        min-height: 100px;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+      .hbox {
+        width: 68px;
+        height: 68px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--fm);
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .ha {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1.5px solid #bfdbfe;
+      }
+      .hb {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1.5px solid #a7f3d0;
+      }
+      .hc {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1.5px solid #fde68a;
+      }
+      .hprop {
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--muted2);
+        text-align: center;
+        margin-bottom: 2.4rem;
+        animation: fu 0.5s 0.25s ease both;
+        min-height: 20px;
+      }
+      .hprop b {
+        color: var(--accent);
+      }
+      .hstart {
+        font-family: var(--fb);
+        font-size: 16px;
+        font-weight: 600;
+        padding: 14px 38px;
+        border-radius: var(--r);
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        animation: fu 0.5s 0.3s ease both;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        letter-spacing: -0.01em;
+      }
+      .hstart:hover {
+        background: #1d4ed8;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.38);
+      }
+      .hstart:active {
+        transform: scale(0.97);
+      }
+
+      @keyframes fu {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* ── APP ──────────────────────── */
+      #app {
+        display: none;
+        min-height: 100vh;
+      }
+      #app.on {
+        display: flex;
+        animation: fu 0.35s ease both;
+      }
+
+      /* ── SIDEBAR ──────────────────── */
+      .sb {
+        width: 240px;
+        min-height: 100vh;
+        background: var(--card);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 1.4rem 0;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        flex-shrink: 0;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+      }
+      .sb-logo {
+        font-family: var(--fd);
+        font-size: 17px;
+        font-weight: 900;
+        padding: 0 1.3rem 1.3rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+      .sb-logo span {
+        color: var(--accent);
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 1.3rem;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+        font-size: 14px;
+        color: var(--muted2);
+        transition: all 0.13s;
+        font-weight: 500;
+      }
+      .nav-item:hover {
+        color: var(--text);
+        background: rgba(0, 0, 0, 0.03);
+      }
+      .nav-item.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: var(--accent-dim);
+      }
+      .nav-item.done .nnum {
+        background: var(--green);
+        color: #fff;
+      }
+      .nnum {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--border);
+        color: var(--muted);
+        font-size: 11px;
+        font-family: var(--fm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s;
+      }
+      .sb-prog {
+        margin-top: auto;
+        padding: 1.1rem 1.3rem;
+        border-top: 1px solid var(--border);
+      }
+      .prog-lbl {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .prog-bar {
+        height: 4px;
+        background: var(--border);
+        border-radius: 3px;
+      }
+      .prog-fill {
+        height: 4px;
+        background: var(--green);
+        border-radius: 3px;
+        transition: width 0.4s;
+      }
+      .prog-pct {
+        font-size: 12px;
+        font-family: var(--fm);
+        color: var(--green);
+        margin-top: 5px;
+      }
+
+      /* ── MAIN ─────────────────────── */
+      .main {
+        flex: 1;
+        padding: 2.5rem 3rem;
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 100vh;
+        max-width: none;
+      }
+      .lesson {
+        display: none;
+      }
+      .lesson.on {
+        display: block;
+        animation: fu 0.3s ease both;
+      }
+      .eyebrow {
+        font-size: 12px;
+        font-family: var(--fm);
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .eyebrow b {
+        color: var(--accent);
+      }
+      .lesson h2 {
+        font-family: var(--fd);
+        font-size: 2.4rem;
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        margin-bottom: 0.6rem;
+        color: var(--text);
+        line-height: 1.1;
+      }
+      .ldesc {
+        color: var(--muted2);
+        font-size: 15.5px;
+        margin-bottom: 1.4rem;
+        line-height: 1.7;
+        max-width: 720px;
+      }
+
+      /* callouts */
+      .callout {
+        border-radius: 0 var(--r) var(--r) 0;
+        padding: 0.85rem 1.1rem;
+        margin: 0.9rem 0;
+        font-size: 14.5px;
+        line-height: 1.7;
+        border-left-width: 3px;
+        border-left-style: solid;
+      }
+      .c-purple {
+        background: var(--purple-dim);
+        border-left-color: var(--purple);
+        color: #3b1a8a;
+      }
+      .c-amber {
+        background: var(--amber-dim);
+        border-left-color: var(--amber);
+        color: #78350f;
+      }
+      .c-green {
+        background: var(--green-dim);
+        border-left-color: var(--green);
+        color: #064e3b;
+      }
+      .c-blue {
+        background: var(--accent-dim);
+        border-left-color: var(--accent);
+        color: #1e3a8a;
+      }
+
+      /* ── DEMO PANEL ───────────────── */
+      .demo-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.1rem;
+        margin-bottom: 1.1rem;
+      }
+      @media (max-width: 700px) {
+        .demo-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--rl);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .panel-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.65rem 1.1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .panel-lbl {
+        font-size: 11.5px;
+        font-family: var(--fm);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 500;
+      }
+      .panel-dots {
+        display: flex;
+        gap: 5px;
+      }
+      .pd {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+
+      .flex-canvas {
+        min-height: 200px;
+        padding: 14px;
+        display: flex;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        background: #f0ece6;
+        border: 1px dashed var(--border2);
+        border-radius: 0;
+      }
+      .canvas-tag {
+        position: absolute;
+        top: 5px;
+        right: 8px;
+        font-size: 10.5px;
+        font-family: var(--fm);
+        color: var(--muted);
+        opacity: 0.7;
+      }
+
+      .fi {
+        border-radius: 8px;
+        padding: 9px 15px;
+        font-family: var(--fm);
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+        flex-shrink: 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .fia {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1.5px solid #93c5fd;
+      }
+      .fib {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1.5px solid #6ee7b7;
+      }
+      .fic {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1.5px solid #fcd34d;
+      }
+      .fid {
+        background: #ede9fe;
+        color: #5b21b6;
+        border: 1.5px solid #c4b5fd;
+      }
+      .fie {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1.5px solid #fca5a5;
+      }
+
+      .ctrls-panel {
+        padding: 0.9rem 1.1rem;
+      }
+      .cg {
+        margin-bottom: 0.8rem;
+      }
+      .cg:last-child {
+        margin-bottom: 0;
+      }
+      .cg-name {
+        font-family: var(--fm);
+        font-size: 12px;
+        color: var(--accent);
+        margin-bottom: 0.45rem;
+        font-weight: 500;
+      }
+      .cg-btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .cb {
+        font-size: 12px;
+        font-family: var(--fm);
+        padding: 4px 12px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        color: var(--muted2);
+        background: var(--bg);
+        cursor: pointer;
+        transition: all 0.13s;
+        font-weight: 500;
+      }
+      .cb:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-dim);
+      }
+      .cb.on {
+        background: var(--accent-dim);
+        border-color: var(--accent);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* ── CODE EDITOR ──────────────── */
+      .editor-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--rl);
+        overflow: hidden;
+        margin-bottom: 1.1rem;
+        box-shadow: var(--shadow);
+      }
+      .ed-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem 1.1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .ed-title {
+        font-size: 12px;
+        font-family: var(--fm);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .ed-file {
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .ed-actions {
+        display: flex;
+        gap: 7px;
+      }
+      .eabtn {
+        font-size: 12px;
+        font-family: var(--fm);
+        padding: 4px 12px;
+        border-radius: 6px;
+        border: 1.5px solid var(--border);
+        color: var(--muted2);
+        background: var(--card);
+        cursor: pointer;
+        transition: all 0.13s;
+        font-weight: 500;
+      }
+      .eabtn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .eabtn.run {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .eabtn.run:hover {
+        background: var(--green-dim);
+      }
+      .eabtn.reset {
+        border-color: var(--border2);
+        color: var(--muted);
+      }
+
+      .ed-body {
+        display: flex;
+        min-height: 180px;
+      }
+      .ln {
+        padding: 0.9rem 0.7rem;
+        background: var(--surface);
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--border2);
+        line-height: 1.75;
+        user-select: none;
+        text-align: right;
+        min-width: 38px;
+        border-right: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .ed-ta {
+        flex: 1;
+        padding: 0.9rem 1rem;
+        background: var(--card);
+        font-family: var(--fm);
+        font-size: 13.5px;
+        line-height: 1.75;
+        color: var(--text);
+        border: none;
+        outline: none;
+        resize: vertical;
+        min-height: 180px;
+        tab-size: 2;
+        caret-color: var(--accent);
+      }
+      .ed-ta::selection {
+        background: rgba(37, 99, 235, 0.15);
+      }
+      .ed-foot {
+        padding: 0.35rem 1.1rem;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        font-size: 11.5px;
+        font-family: var(--fm);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .st-ok {
+        color: var(--green);
+      }
+      .st-err {
+        color: var(--red);
+      }
+      .st-idle {
+        color: var(--muted);
+      }
+
+      /* ── EXERCISE ─────────────────── */
+      .ex-wrap {
+        border: 1.5px solid var(--border);
+        border-radius: var(--rl);
+        overflow: hidden;
+        margin-bottom: 1.8rem;
+        box-shadow: var(--shadow);
+      }
+      .ex-top {
+        padding: 0.75rem 1.1rem;
+        background: var(--amber-dim);
+        border-bottom: 1.5px solid rgba(217, 119, 6, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .ex-badge {
+        font-size: 11px;
+        font-family: var(--fm);
+        font-weight: 600;
+        color: var(--amber);
+        background: #fef3c7;
+        padding: 3px 10px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border: 1px solid #fcd34d;
+      }
+      .ex-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .ex-body {
+        padding: 1.1rem;
+        background: var(--card);
+      }
+      .ex-desc {
+        font-size: 14.5px;
+        color: var(--muted2);
+        margin-bottom: 1rem;
+        line-height: 1.65;
+      }
+      .ex-panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+      }
+      @media (max-width: 560px) {
+        .ex-panels {
+          grid-template-columns: 1fr;
+        }
+      }
+      .ex-plbl {
+        font-size: 11px;
+        font-family: var(--fm);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+      .ex-cv {
+        background: #f0ece6;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        min-height: 120px;
+        padding: 10px;
+        display: flex;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .ex-cv.target-cv {
+        border-color: rgba(5, 150, 105, 0.4);
+        background: #f0fdf4;
+      }
+      .ex-cv .fi {
+        font-size: 12px;
+        padding: 6px 11px;
+      }
+      .ex-fbk {
+        margin-top: 0.9rem;
+        padding: 0.65rem 1rem;
+        border-radius: var(--r);
+        font-size: 13.5px;
+        display: none;
+        font-weight: 500;
+      }
+      .fbk-ok {
+        display: flex !important;
+        background: var(--green-dim);
+        color: var(--green);
+        border: 1.5px solid rgba(5, 150, 105, 0.25);
+      }
+      .fbk-err {
+        display: flex !important;
+        background: var(--red-dim);
+        color: var(--red);
+        border: 1.5px solid rgba(220, 38, 38, 0.2);
+      }
+      .ex-btns {
+        margin-top: 0.9rem;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .xbtn {
+        font-size: 13px;
+        font-family: var(--fm);
+        padding: 6px 16px;
+        border-radius: 7px;
+        border: 1.5px solid var(--border);
+        color: var(--muted2);
+        background: var(--bg);
+        cursor: pointer;
+        transition: all 0.14s;
+        font-weight: 500;
+      }
+      .xbtn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .xbtn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+      }
+      .xbtn.primary:hover {
+        background: #1d4ed8;
+      }
+
+      /* ── LESSON NAV ───────────────── */
+      .lnav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1.6rem;
+        border-top: 1.5px solid var(--border);
+        margin-top: 0.5rem;
+      }
+      .lbtn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        padding: 10px 22px;
+        border-radius: var(--r);
+        border: 1.5px solid var(--border);
+        color: var(--text);
+        background: var(--card);
+        cursor: pointer;
+        transition: all 0.14s;
+        font-family: var(--fb);
+        font-weight: 500;
+        box-shadow: var(--shadow);
+      }
+      .lbtn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .lbtn:disabled {
+        opacity: 0.3;
+        cursor: default;
+        pointer-events: none;
+      }
+      .lbtn.next {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(37, 99, 235, 0.28);
+      }
+      .lbtn.next:hover {
+        background: #1d4ed8;
+      }
+      .l-dots {
+        display: flex;
+        gap: 6px;
+      }
+      .ldot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--border2);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .ldot.active {
+        background: var(--accent);
+        width: 16px;
+        border-radius: 3px;
+      }
+      .ldot.done {
+        background: var(--green);
+      }
+
+      /* ── AXES DIAGRAM ─────────────── */
+      .axes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        margin: 0.9rem 0 1.4rem;
+      }
+      .ax {
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r);
+        padding: 1rem;
+        box-shadow: var(--shadow);
+      }
+      .ax-t {
+        font-family: var(--fm);
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 0.7rem;
+      }
+      .ax-t.blue {
+        color: var(--accent);
+      }
+      .ax-t.green {
+        color: var(--green);
+      }
+      .arrow-h {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 12px;
+        color: var(--muted2);
+        margin: 0.3rem 0;
+      }
+      .ahl {
+        flex: 1;
+        height: 1px;
+        background: var(--border2);
+        position: relative;
+      }
+      .ahl::after {
+        content: "";
+        position: absolute;
+        right: -4px;
+        top: -3px;
+        width: 0;
+        height: 0;
+        border-left: 5px solid var(--muted);
+        border-top: 3px solid transparent;
+        border-bottom: 3px solid transparent;
+      }
+      .arrow-v {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 3px;
+        font-size: 12px;
+        color: var(--muted2);
+        margin: 0.3rem 0;
+      }
+      .avl {
+        width: 1px;
+        height: 38px;
+        background: var(--border2);
+        position: relative;
+        margin-left: 4px;
+      }
+      .avl::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: -3px;
+        width: 0;
+        height: 0;
+        border-top: 5px solid var(--muted);
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+      }
+
+      /* ── PROP TABLE ───────────────── */
+      .ptable {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+        margin: 0.9rem 0 1.1rem;
+      }
+      .ptable th {
+        text-align: left;
+        padding: 9px 12px;
+        border-bottom: 1.5px solid var(--border);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 12.5px;
+        background: var(--surface);
+      }
+      .ptable td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .ptable td:first-child {
+        font-family: var(--fm);
+        font-size: 13px;
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .ptable td:last-child {
+        color: var(--muted2);
+      }
+      .ptable tr:last-child td {
+        border-bottom: none;
+      }
+      .ptable tr:hover td {
+        background: rgba(0, 0, 0, 0.02);
+      }
+
+      /* scrollbar */
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+
+      @media (max-width: 700px) {
+        .sb {
+          display: none;
+        }
+        .main {
+          padding: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══ HERO ══════════════════════════════════════════════ -->
+    <section id="hero">
+      <div class="hgrid"></div>
+      <div class="hglow"></div>
+      <div class="hbadge">
+        <span class="hbdot"></span> React Native · Aula interativa
+      </div>
+      <h1 class="htitle">Flex<em>Box</em></h1>
+      <p class="hsub">
+        Aprenda o layout do React Native de forma visual e interativa
+      </p>
+      <div class="hdemo" id="hdemo">
+        <div class="hbox ha">A</div>
+        <div class="hbox hb">B</div>
+        <div class="hbox hc">C</div>
+      </div>
+      <div class="hprop" id="hprop"><b>flexDirection</b>: 'column'</div>
+      <button class="hstart" onclick="startApp()">Começar aula →</button>
+    </section>
+
+    <!-- ══ APP ═══════════════════════════════════════════════ -->
+    <div id="app">
+      <aside class="sb">
+        <div class="sb-logo"><span>■</span> FlexTrainer</div>
+        <div id="nav-list"></div>
+        <div class="sb-prog">
+          <div class="prog-lbl">Progresso</div>
+          <div class="prog-bar">
+            <div class="prog-fill" id="prog-fill" style="width: 0%"></div>
+          </div>
+          <div class="prog-pct" id="prog-pct">0 / 8</div>
+        </div>
+      </aside>
+      <main class="main" id="main-content"></main>
+    </div>
+
+    <script>
+      const FLEX_CSS_PROPS = [
+        "flexDirection",
+        "justifyContent",
+        "alignItems",
+        "alignSelf",
+        "flexWrap",
+        "flex",
+        "flexGrow",
+        "flexShrink",
+        "gap",
+        "rowGap",
+        "columnGap",
+        "alignContent",
+      ];
+
+      const LESSONS = [
+        {
+          id: "intro",
+          title: "Modelo Mental",
+          desc: "O Flexbox organiza itens em um único eixo — horizontal ou vertical. No React Native <strong>toda View já é flex por padrão</strong>. A diferença crucial: o eixo padrão é <code>column</code> (vertical), não <code>row</code> como no CSS web.",
+          concept: {
+            type: "purple",
+            text: "<strong>Regra de ouro:</strong> <code>justifyContent</code> controla o eixo principal (na direção do flex). <code>alignItems</code> controla o eixo cruzado (perpendicular). Quando você troca o <code>flexDirection</code>, os papéis invertem automaticamente.",
+          },
+          warn: {
+            type: "amber",
+            text: "No CSS web o padrão é <code>flexDirection: row</code>. No React Native é <code>flexDirection: column</code>. Isso reflete que telas mobile rolam verticalmente.",
+          },
+          controls: [
+            {
+              prop: "flexDirection",
+              options: ["column", "row", "column-reverse", "row-reverse"],
+            },
+          ],
+          initState: {
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            gap: "6px",
+          },
+          editorCode: `// O container principal da sua tela\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'column', // tente 'row'\n  },\n});`,
+          exercise: {
+            desc: "Faça os três itens se organizarem horizontalmente, da direita para a esquerda.",
+            target: {
+              flexDirection: "row-reverse",
+              gap: "6px",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+            },
+            testProps: ["flexDirection"],
+            items: 3,
+          },
+          items: 3,
+        },
+        {
+          id: "justify",
+          title: "justifyContent",
+          desc: "Controla <strong>como os itens são distribuídos no eixo principal</strong>. Se o eixo for vertical (column), distribui de cima para baixo. Se for horizontal (row), distribui da esquerda para a direita.",
+          concept: {
+            type: "purple",
+            text: "Pense em <code>justifyContent</code> como o alinhamento <em>na direção em que os itens andam</em>. <code>space-between</code> é o mais usado em apps reais — cria espaço igual entre os itens sem margens nas bordas.",
+          },
+          controls: [
+            { prop: "flexDirection", options: ["column", "row"] },
+            {
+              prop: "justifyContent",
+              options: [
+                "flex-start",
+                "center",
+                "flex-end",
+                "space-between",
+                "space-around",
+                "space-evenly",
+              ],
+            },
+          ],
+          initState: {
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            alignItems: "stretch",
+            gap: "6px",
+          },
+          editorCode: `const styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'column',\n    justifyContent: 'flex-start',\n  },\n});`,
+          exercise: {
+            desc: "Centralize os itens no eixo vertical (column) E horizontal.",
+            target: {
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "6px",
+            },
+            testProps: ["justifyContent", "alignItems"],
+            items: 3,
+          },
+          items: 3,
+        },
+        {
+          id: "align",
+          title: "alignItems & alignSelf",
+          desc: "<code>alignItems</code> controla o alinhamento no <strong>eixo cruzado</strong> para todos os filhos. <code>alignSelf</code> sobrescreve isso para um filho específico — útil quando um único item precisa se comportar diferente dos outros.",
+          concept: {
+            type: "purple",
+            text: "Com <code>flexDirection: row</code>, o eixo cruzado é <em>vertical</em>. Então <code>alignItems: center</code> centraliza verticalmente — o que você quer na maioria dos itens de lista!",
+          },
+          tip: {
+            type: "green",
+            text: "O padrão de item de lista mais clássico: <code>flexDirection: row</code> + <code>alignItems: center</code> + <code>gap: 12</code>. Avatar à esquerda, texto no meio com <code>flex: 1</code>, ação à direita.",
+          },
+          controls: [
+            { prop: "flexDirection", options: ["row", "column"] },
+            {
+              prop: "alignItems",
+              options: [
+                "flex-start",
+                "center",
+                "flex-end",
+                "stretch",
+                "baseline",
+              ],
+            },
+          ],
+          initState: {
+            flexDirection: "row",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            gap: "6px",
+          },
+          editorCode: `const styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'row',\n    alignItems: 'flex-start', // tente 'center'\n  },\n  item: {\n    // alignSelf: 'flex-end', // override por item\n  },\n});`,
+          exercise: {
+            desc: "Monte um item de lista: items horizontais com alinhamento central no eixo cruzado.",
+            target: {
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-start",
+              gap: "6px",
+            },
+            testProps: ["flexDirection", "alignItems"],
+            items: 3,
+          },
+          items: 3,
+        },
+        {
+          id: "flex-prop",
+          title: "A propriedade flex",
+          desc: "<code>flex: N</code> define quanto do espaço disponível um filho ocupa, em <strong>proporção</strong> à soma dos valores <code>flex</code> dos irmãos. É a propriedade mais usada para construir layouts proporcionais.",
+          concept: {
+            type: "purple",
+            text: "<code>flex: 1</code> no container raiz faz ele ocupar a tela toda. <code>flex: 1</code> em um filho que está entre itens de tamanho fixo faz esse filho crescer para preencher o espaço restante — padrão clássico para tela com header e footer fixos.",
+          },
+          warn: {
+            type: "amber",
+            text: "<code>flex: N</code> é atalho para <code>flexGrow: N</code> + <code>flexShrink: 1</code> + <code>flexBasis: 0</code>. Na maioria dos casos práticos, usar só <code>flex</code> é suficiente.",
+          },
+          controls: [
+            {
+              prop: "flex-a",
+              label: "flex (A)",
+              options: ["1", "2", "3", "0"],
+            },
+            {
+              prop: "flex-b",
+              label: "flex (B)",
+              options: ["1", "2", "3", "0"],
+            },
+            {
+              prop: "flex-c",
+              label: "flex (C)",
+              options: ["1", "2", "3", "0"],
+            },
+          ],
+          initState: {
+            flexDirection: "row",
+            alignItems: "stretch",
+            gap: "6px",
+            "flex-a": "1",
+            "flex-b": "1",
+            "flex-c": "1",
+          },
+          editorCode: `const styles = StyleSheet.create({\n  container: { flex: 1, flexDirection: 'row' },\n  sidebar:   { flex: 1 },   // 1/4 do espaço\n  content:   { flex: 2 },   // 2/4 do espaço (dobro)\n  panel:     { flex: 1 },   // 1/4 do espaço\n});`,
+          exercise: {
+            desc: "Faça o item B ocupar o dobro do espaço dos itens A e C.",
+            target: {
+              flexDirection: "row",
+              alignItems: "stretch",
+              gap: "6px",
+              "flex-a": "1",
+              "flex-b": "2",
+              "flex-c": "1",
+            },
+            testProps: ["flex-b"],
+            items: 3,
+          },
+          items: 3,
+        },
+        {
+          id: "wrap",
+          title: "flexWrap & gap",
+          desc: "Por padrão os itens ficam em uma única linha e podem encolher. Com <code>flexWrap: wrap</code> os itens quebram para a linha seguinte quando não há mais espaço. <code>gap</code> define o espaçamento entre itens de forma limpa.",
+          concept: {
+            type: "purple",
+            text: "<code>gap</code> foi adicionado ao React Native na versão 0.71. Antes disso, você via <code>margin</code> em cada item. Hoje, <code>gap</code> é o jeito preferido — funciona tanto em <code>column</code> quanto em <code>row</code> e respeita <code>flexWrap</code> automaticamente.",
+          },
+          warn: {
+            type: "amber",
+            text: "Em versões antigas do RN (&lt; 0.71), use <code>margin</code> nos itens filhos para simular o gap. Ex: <code>marginRight: 8, marginBottom: 8</code> + margem negativa no container.",
+          },
+          controls: [
+            { prop: "flexWrap", options: ["nowrap", "wrap", "wrap-reverse"] },
+            { prop: "gap", options: ["4px", "8px", "16px", "0px"] },
+          ],
+          initState: {
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            gap: "8px",
+            alignItems: "flex-start",
+            alignContent: "flex-start",
+          },
+          editorCode: `const styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    flexDirection: 'row',\n    flexWrap: 'wrap',   // quebra a linha\n    gap: 12,            // espaço entre itens\n  },\n});`,
+          exercise: {
+            desc: "Organize 5 itens em modo wrap com gap de 16px.",
+            target: {
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: "16px",
+              alignItems: "flex-start",
+              alignContent: "flex-start",
+            },
+            testProps: ["flexWrap", "gap"],
+            items: 5,
+          },
+          items: 5,
+        },
+        {
+          id: "grow-shrink",
+          title: "flexGrow & flexShrink",
+          desc: "Controle fino do crescimento e encolhimento individual. <code>flexGrow</code> define quanto um item pode <strong>crescer</strong> além do seu tamanho base. <code>flexShrink</code> define quanto pode <strong>encolher</strong> quando falta espaço.",
+          concept: {
+            type: "purple",
+            text: "Padrão clássico: avatar com <code>flexGrow: 0, flexShrink: 0</code> (tamanho fixo) + texto com <code>flexGrow: 1, flexShrink: 1</code> (cresce para preencher, encolhe se precisar). Esse duo é a espinha dorsal de 80% dos itens de lista.",
+          },
+          controls: [
+            {
+              prop: "flexGrow-a",
+              label: "flexGrow (A)",
+              options: ["0", "1", "2"],
+            },
+            {
+              prop: "flexShrink-b",
+              label: "flexShrink (B)",
+              options: ["1", "0"],
+            },
+            {
+              prop: "flexGrow-c",
+              label: "flexGrow (C)",
+              options: ["1", "2", "0"],
+            },
+          ],
+          initState: {
+            flexDirection: "row",
+            alignItems: "stretch",
+            gap: "6px",
+            "flexGrow-a": "0",
+            "flexShrink-b": "1",
+            "flexGrow-c": "1",
+          },
+          editorCode: `const styles = StyleSheet.create({\n  container: { flex: 1, flexDirection: 'row' },\n  avatar: {\n    width: 48,\n    flexGrow: 0,    // não cresce\n    flexShrink: 0,  // não encolhe\n  },\n  texto: {\n    flexGrow: 1,    // cresce para preencher\n    flexShrink: 1,  // pode encolher\n  },\n});`,
+          exercise: {
+            desc: "Faça A ter tamanho fixo (flexGrow 0) e C ocupar o máximo disponível (flexGrow 2).",
+            target: {
+              flexDirection: "row",
+              alignItems: "stretch",
+              gap: "6px",
+              "flexGrow-a": "0",
+              "flexShrink-b": "1",
+              "flexGrow-c": "2",
+            },
+            testProps: ["flexGrow-a", "flexGrow-c"],
+            items: 3,
+          },
+          items: 3,
+        },
+        {
+          id: "real-layouts",
+          title: "Layouts Reais",
+          desc: "Combinando tudo: os três padrões de layout mais comuns em apps React Native. Cada um usa um conjunto diferente de propriedades Flexbox.",
+          concept: {
+            type: "blue",
+            text: "O padrão <strong>tela completa</strong> é: container com <code>flex: 1</code> e <code>flexDirection: column</code> → header com altura fixa → conteúdo com <code>flex: 1</code> (cresce) → footer com altura fixa. O filho com <code>flex: 1</code> empurra o footer para baixo.",
+          },
+          tip: {
+            type: "green",
+            text: "Para <strong>item de lista</strong>: <code>flexDirection: row</code> + <code>alignItems: center</code> + avatar/ícone com tamanho fixo + texto com <code>flex: 1</code> + ação à direita com tamanho fixo.",
+          },
+          controls: [
+            {
+              prop: "layout",
+              label: "Escolha o layout",
+              options: ["tela-completa", "item-lista", "grid-cards"],
+            },
+          ],
+          initState: { layout: "tela-completa" },
+          editorCode: `// Layout: tela completa\nconst styles = StyleSheet.create({\n  tela:     { flex: 1, flexDirection: 'column' },\n  header:   { height: 56 },          // fixo\n  conteudo: { flex: 1 },             // cresce\n  footer:   { padding: 16 },         // fixo\n});`,
+          exercise: null,
+          items: 3,
+        },
+        {
+          id: "desafio",
+          title: "Desafio Final",
+          desc: "Construa os layouts a partir do zero. O editor está em branco — escreva o CSS e clique Executar para ver o resultado. Tente atingir a meta antes de pedir dica!",
+          concept: {
+            type: "amber",
+            text: "<strong>Dica geral:</strong> comece sempre pelo <code>flexDirection</code>. Depois defina <code>justifyContent</code> (eixo principal) e <code>alignItems</code> (eixo cruzado). Adicione <code>gap</code> por último.",
+          },
+          controls: [
+            {
+              prop: "challenge",
+              label: "Selecione o desafio",
+              options: [
+                "centralizar",
+                "linha-3-colunas",
+                "lista-item",
+                "grid-wrap",
+              ],
+            },
+          ],
+          initState: { challenge: "centralizar" },
+          editorCode: `// Escreva seu CSS aqui\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    \n  },\n});`,
+          exercise: null,
+          items: 1,
+        },
+      ];
+
+      let cur = 0;
+      const done = new Set(JSON.parse(localStorage.getItem("fx-done") || "[]"));
+      const lessonState = {};
+
+      /* hero animation */
+      const heroSeq = [
+        {
+          fd: "column",
+          jc: "flex-start",
+          ai: "flex-start",
+          label: "flexDirection: 'column'",
+        },
+        {
+          fd: "row",
+          jc: "flex-start",
+          ai: "center",
+          label: "flexDirection: 'row'",
+        },
+        {
+          fd: "row",
+          jc: "center",
+          ai: "center",
+          label: "justifyContent: 'center'",
+        },
+        {
+          fd: "row",
+          jc: "space-between",
+          ai: "center",
+          label: "justifyContent: 'space-between'",
+        },
+        {
+          fd: "column",
+          jc: "center",
+          ai: "center",
+          label: "justifyContent + alignItems: 'center'",
+        },
+        {
+          fd: "column",
+          jc: "flex-end",
+          ai: "flex-end",
+          label: "justifyContent: 'flex-end'",
+        },
+      ];
+      let hi = 0;
+      function animHero() {
+        const s = heroSeq[hi % heroSeq.length];
+        const demo = document.getElementById("hdemo");
+        const prop = document.getElementById("hprop");
+        demo.style.flexDirection = s.fd;
+        demo.style.justifyContent = s.jc;
+        demo.style.alignItems = s.ai;
+        demo.style.width = s.fd === "row" ? "260px" : "120px";
+        demo.style.height = s.fd === "column" ? "260px" : "auto";
+        prop.innerHTML = s.label.replace(/([\w]+):/g, "<b>$1</b>:");
+        hi++;
+      }
+      animHero();
+      setInterval(animHero, 2200);
+
+      function startApp() {
+        document.getElementById("hero").style.display = "none";
+        const app = document.getElementById("app");
+        app.classList.add("on");
+        buildNav();
+        LESSONS.forEach((_, i) => renderLesson(i));
+        goTo(0);
+        updateProgress();
+      }
+
+      function buildNav() {
+        const nl = document.getElementById("nav-list");
+        nl.innerHTML = LESSONS.map(
+          (l, i) => `
+          <div class="nav-item${done.has(i) ? " done" : ""}" id="nav-${i}" onclick="goTo(${i})">
+            <div class="nnum">${i + 1}</div>
+            <div class="nav-label">${l.title}</div>
+          </div>`,
+        ).join("");
+      }
+
+      function goTo(idx) {
+        document
+          .querySelectorAll(".lesson")
+          .forEach((l) => l.classList.remove("on"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        const el = document.getElementById(`lesson-${idx}`);
+        if (el) el.classList.add("on");
+        const ni = document.getElementById(`nav-${idx}`);
+        if (ni) ni.classList.add("active");
+        cur = idx;
+        document.getElementById("main-content").scrollTop = 0;
+        updateDots(idx);
+      }
+
+      function updateDots(idx) {
+        document.querySelectorAll(".ldot").forEach((d, i) => {
+          d.className =
+            "ldot" +
+            (done.has(i) ? " done" : "") +
+            (i === idx ? " active" : "");
+        });
+      }
+
+      function markDone(idx) {
+        done.add(idx);
+        localStorage.setItem("fx-done", JSON.stringify([...done]));
+        const ni = document.getElementById(`nav-${idx}`);
+        if (ni) {
+          ni.classList.add("done");
+          ni.querySelector(".nnum").style.background = "var(--green)";
+          ni.querySelector(".nnum").style.color = "#fff";
+        }
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const pct = Math.round((done.size / LESSONS.length) * 100);
+        document.getElementById("prog-fill").style.width = pct + "%";
+        document.getElementById("prog-pct").textContent =
+          done.size + " / " + LESSONS.length;
+      }
+
+      function renderLesson(idx) {
+        const l = LESSONS[idx];
+        lessonState[idx] = { ...l.initState };
+        const mc = document.getElementById("main-content");
+        const div = document.createElement("div");
+        div.className = "lesson";
+        div.id = `lesson-${idx}`;
+        const callout = (c) =>
+          c ? `<div class="callout c-${c.type}">${c.text}</div>` : "";
+        div.innerHTML = `
+          <div class="eyebrow"><b>${String(idx + 1).padStart(2, "0")}</b> — Tópico</div>
+          <h2>${l.title}</h2>
+          <p class="ldesc">${l.desc}</p>
+          ${callout(l.concept)}${callout(l.warn)}${callout(l.tip)}
+          ${renderIntro(idx)}
+          <div class="demo-grid" id="demo-grid-${idx}">
+            ${renderPreview(idx)}
+            ${renderControls(idx)}
+          </div>
+          ${renderEditor(idx)}
+          ${l.exercise ? renderExercise(idx) : ""}
+          ${renderLNav(idx)}`;
+        mc.appendChild(div);
+      }
+
+      function renderIntro(idx) {
+        if (idx !== 0) return "";
+        return `
+          <div class="axes">
+            <div class="ax">
+              <div class="ax-t blue">flexDirection: 'column' (padrão RN)</div>
+              <div class="arrow-v"><span>eixo principal ↓</span><div class="avl"></div><span>vertical</span></div>
+              <div style="margin-top:.3rem;font-size:12px;color:var(--muted2)">eixo cruzado → horizontal</div>
+            </div>
+            <div class="ax">
+              <div class="ax-t green">flexDirection: 'row'</div>
+              <div class="arrow-h"><span>eixo principal</span><div class="ahl"></div></div>
+              <div style="margin:.3rem 0;font-size:12px;color:var(--muted2)">horizontal →</div>
+              <div style="font-size:12px;color:var(--muted2)">eixo cruzado ↓ vertical</div>
+            </div>
+          </div>
+          <table class="ptable">
+            <tr><th>Propriedade</th><th>Controla</th></tr>
+            <tr><td>flexDirection</td><td>Direção do eixo principal (column/row)</td></tr>
+            <tr><td>justifyContent</td><td>Distribuição no eixo principal</td></tr>
+            <tr><td>alignItems</td><td>Alinhamento no eixo cruzado (todos)</td></tr>
+            <tr><td>alignSelf</td><td>Alinhamento cruzado (item individual)</td></tr>
+            <tr><td>flex</td><td>Proporção de espaço que o item ocupa</td></tr>
+            <tr><td>flexWrap</td><td>Quebra de linha quando não há espaço</td></tr>
+            <tr><td>gap</td><td>Espaçamento entre itens</td></tr>
+          </table>`;
+      }
+
+      function renderPreview(idx) {
+        const l = LESSONS[idx];
+        const items = Array.from(
+          { length: l.items || 3 },
+          (_, i) =>
+            `<div class="fi fi${["a", "b", "c", "d", "e"][i]}" id="fi-${idx}-${i}">${["A", "B", "C", "D", "E"][i]}</div>`,
+        ).join("");
+        return `
+          <div class="panel-card">
+            <div class="panel-top">
+              <span class="panel-lbl">Preview</span>
+              <div class="panel-dots"><div class="pd" style="background:#ef4444"></div><div class="pd" style="background:#f59e0b"></div><div class="pd" style="background:#10b981"></div></div>
+            </div>
+            <div class="flex-canvas" id="canvas-${idx}" style="gap:6px">
+              <span class="canvas-tag">View</span>${items}
+            </div>
+          </div>`;
+      }
+
+      function renderControls(idx) {
+        const l = LESSONS[idx];
+        const groups = l.controls
+          .map((c) => {
+            const lbl = c.label || c.prop;
+            const btns = c.options
+              .map(
+                (o) =>
+                  `<button class="cb${lessonState[idx][c.prop] === o ? " on" : ""}" onclick="setCtrl(${idx},'${c.prop}','${o}',this)">${o}</button>`,
+              )
+              .join("");
+            return `<div class="cg"><div class="cg-name">${lbl}</div><div class="cg-btns">${btns}</div></div>`;
+          })
+          .join("");
+        return `
+          <div class="panel-card">
+            <div class="panel-top"><span class="panel-lbl">Controles</span></div>
+            <div class="ctrls-panel">${groups}</div>
+          </div>`;
+      }
+
+      function renderEditor(idx) {
+        const l = LESSONS[idx];
+        const lines = l.editorCode
+          .split("\n")
+          .map((_, i) => i + 1)
+          .join("\n");
+        return `
+          <div class="editor-wrap">
+            <div class="ed-top">
+              <div class="ed-title">editor · <span class="ed-file">styles.js</span></div>
+              <div class="ed-actions">
+                <button class="eabtn reset" onclick="resetEditor(${idx})">↺ resetar</button>
+                <button class="eabtn run" onclick="runEditor(${idx})">▶ executar</button>
+              </div>
+            </div>
+            <div class="ed-body">
+              <div class="ln" id="ln-${idx}">${lines}</div>
+              <textarea class="ed-ta" id="ta-${idx}" spellcheck="false" autocorrect="off" autocapitalize="off" oninput="syncLines(${idx})">${l.editorCode}</textarea>
+            </div>
+            <div class="ed-foot">
+              <span class="st-idle" id="st-${idx}">pronto — edite o código e clique executar</span>
+              <span style="color:var(--muted)">StyleSheet.create</span>
+            </div>
+          </div>`;
+      }
+
+      function renderExercise(idx) {
+        const ex = LESSONS[idx].exercise;
+        const items = (n, prefix) =>
+          Array.from(
+            { length: n || 3 },
+            (_, i) =>
+              `<div class="fi fi${["a", "b", "c", "d", "e"][i]}" id="${prefix}-${i}">${["A", "B", "C", "D", "E"][i]}</div>`,
+          ).join("");
+        return `
+          <div class="ex-wrap">
+            <div class="ex-top">
+              <span class="ex-badge">exercício</span>
+              <span class="ex-title">${LESSONS[idx].title}</span>
+            </div>
+            <div class="ex-body">
+              <div class="ex-desc">${ex.desc}</div>
+              <div class="ex-panels">
+                <div>
+                  <div class="ex-plbl">meta (target)</div>
+                  <div class="ex-cv target-cv" id="ex-target-${idx}" style="gap:${ex.target.gap || "6px"};flex-direction:${ex.target.flexDirection || "column"};justify-content:${ex.target.justifyContent || "flex-start"};align-items:${ex.target.alignItems || "flex-start"};flex-wrap:${ex.target.flexWrap || "nowrap"}">
+                    ${items(ex.items, "ext-" + idx)}
+                  </div>
+                </div>
+                <div>
+                  <div class="ex-plbl">seu resultado</div>
+                  <div class="ex-cv" id="ex-yours-${idx}" style="gap:6px;flex-direction:column">
+                    ${items(ex.items, "exy-" + idx)}
+                  </div>
+                </div>
+              </div>
+              <div class="ex-fbk" id="ex-fbk-${idx}"></div>
+              <div class="ex-btns">
+                <button class="xbtn" onclick="exReset(${idx})">↺ limpar</button>
+                <button class="xbtn primary" onclick="exCheck(${idx})">✓ verificar</button>
+                <button class="xbtn" onclick="exHint(${idx})">? dica</button>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      function renderLNav(idx) {
+        const dots = LESSONS.map(
+          (_, i) =>
+            `<div class="ldot${i === idx ? " active" : ""}${done.has(i) ? " done" : ""}" onclick="goTo(${i})"></div>`,
+        ).join("");
+        return `
+          <div class="lnav">
+            <button class="lbtn" onclick="goTo(${idx - 1})" ${idx === 0 ? "disabled" : ""}>← anterior</button>
+            <div class="l-dots">${dots}</div>
+            <button class="lbtn next" onclick="nextLesson(${idx})">${idx === LESSONS.length - 1 ? "Concluir ✓" : "próximo →"}</button>
+          </div>`;
+      }
+
+      function setCtrl(idx, prop, val, btn) {
+        btn
+          .closest(".cg-btns")
+          .querySelectorAll(".cb")
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        lessonState[idx][prop] = val;
+        applyState(idx);
+        syncEditorFromState(idx);
+      }
+
+      function applyState(idx) {
+        const s = lessonState[idx];
+        const canvas = document.getElementById("canvas-" + idx);
+        if (!canvas) return;
+        if (s.layout) return applyLayout(idx, s.layout);
+        if (s.challenge) return applyChallenge(idx, s.challenge);
+        const directProps = [
+          "flexDirection",
+          "justifyContent",
+          "alignItems",
+          "alignSelf",
+          "flexWrap",
+          "gap",
+          "alignContent",
+        ];
+        directProps.forEach((p) => {
+          if (s[p] !== undefined) canvas.style[p] = s[p];
+        });
+        ["a", "b", "c", "d", "e"].forEach((l, i) => {
+          const fi = document.getElementById(`fi-${idx}-${i}`);
+          if (!fi) return;
+          const fv = s[`flex-${l}`],
+            gv = s[`flexGrow-${l}`],
+            sv = s[`flexShrink-${l}`];
+          if (fv !== undefined) {
+            fi.style.flex = fv;
+            fi.textContent = l.toUpperCase() + (fv ? ` f:${fv}` : "");
+          }
+          if (gv !== undefined) {
+            fi.style.flexGrow = gv;
+            fi.textContent = l.toUpperCase() + (gv ? ` g:${gv}` : "");
+          }
+          if (sv !== undefined) fi.style.flexShrink = sv;
+        });
+      }
+
+      function applyLayout(idx, name) {
+        const canvas = document.getElementById("canvas-" + idx);
+        const items = ["a", "b", "c"].map((l) =>
+          document.getElementById(`fi-${idx}-${"abc".indexOf(l)}`),
+        );
+        canvas.style.flexDirection = "column";
+        canvas.style.justifyContent = "flex-start";
+        canvas.style.alignItems = "stretch";
+        canvas.style.gap = "0";
+        canvas.style.padding = "0";
+        items.forEach((it) => {
+          if (it) {
+            it.style.flex = "";
+            it.style.borderRadius = "0";
+            it.style.padding = "10px 14px";
+          }
+        });
+        if (name === "tela-completa") {
+          if (items[0]) {
+            items[0].style.minHeight = "44px";
+            items[0].textContent = "header (fixo)";
+          }
+          if (items[1]) {
+            items[1].style.flex = "1";
+            items[1].textContent = "conteúdo (flex:1)";
+          }
+          if (items[2]) {
+            items[2].style.minHeight = "44px";
+            items[2].textContent = "footer (fixo)";
+          }
+        } else if (name === "item-lista") {
+          canvas.style.flexDirection = "row";
+          canvas.style.alignItems = "center";
+          canvas.style.gap = "12px";
+          canvas.style.padding = "14px";
+          if (items[0]) {
+            items[0].style.width = "44px";
+            items[0].style.height = "44px";
+            items[0].style.borderRadius = "50%";
+            items[0].textContent = "👤";
+          }
+          if (items[1]) {
+            items[1].style.flex = "1";
+            items[1].textContent = "nome · descrição (flex:1)";
+          }
+          if (items[2]) {
+            items[2].textContent = "Ver →";
+          }
+        } else if (name === "grid-cards") {
+          canvas.style.flexDirection = "row";
+          canvas.style.flexWrap = "wrap";
+          canvas.style.gap = "8px";
+          canvas.style.alignItems = "flex-start";
+          canvas.style.padding = "8px";
+          ["a", "b", "c"].forEach((l, i) => {
+            const it = items[i];
+            if (it) {
+              it.style.width = "calc(50% - 4px)";
+              it.textContent = `card ${i + 1}`;
+            }
+          });
+        }
+      }
+
+      function applyChallenge(idx, name) {
+        const canvas = document.getElementById("canvas-" + idx);
+        canvas.style.cssText =
+          "min-height:200px;padding:14px;display:flex;transition:all .35s;background:#f0ece6;border:1px dashed var(--border2);gap:6px;";
+        const items = LESSONS[idx].items;
+        canvas.innerHTML =
+          '<span class="canvas-tag">View</span>' +
+          Array.from(
+            { length: items },
+            (_, i) =>
+              `<div class="fi fi${["a", "b", "c", "d", "e"][i]}" id="fi-${idx}-${i}">${["A", "B", "C", "D", "E"][i]}</div>`,
+          ).join("");
+      }
+
+      function syncLines(idx) {
+        const ta = document.getElementById("ta-" + idx);
+        const ln = document.getElementById("ln-" + idx);
+        const count = ta.value.split("\n").length;
+        ln.textContent = Array.from({ length: count }, (_, i) => i + 1).join(
+          "\n",
+        );
+        setStatus(idx, "idle", "pronto — clique executar");
+      }
+
+      function runEditor(idx) {
+        const ta = document.getElementById("ta-" + idx);
+        const parsed = parseStyles(ta.value);
+        const canvas = document.getElementById("canvas-" + idx);
+        if (!canvas) {
+          setStatus(idx, "err", "canvas não encontrado");
+          return;
+        }
+        let applied = 0;
+        for (const [k, v] of Object.entries(parsed)) {
+          try {
+            canvas.style[k] = v;
+            applied++;
+          } catch (e) {}
+        }
+        const exYours = document.getElementById("ex-yours-" + idx);
+        if (exYours) {
+          for (const [k, v] of Object.entries(parsed)) {
+            try {
+              exYours.style[k] = v;
+            } catch (e) {}
+          }
+        }
+        if (applied > 0) {
+          setStatus(idx, "ok", `✓ ${applied} propriedade(s) aplicada(s)`);
+          for (const [k, v] of Object.entries(parsed)) lessonState[idx][k] = v;
+        } else setStatus(idx, "err", "nenhuma propriedade Flexbox reconhecida");
+      }
+
+      function resetEditor(idx) {
+        const ta = document.getElementById("ta-" + idx);
+        ta.value = LESSONS[idx].editorCode;
+        syncLines(idx);
+        lessonState[idx] = { ...LESSONS[idx].initState };
+        applyState(idx);
+        setStatus(idx, "idle", "código resetado");
+      }
+
+      function setStatus(idx, type, msg) {
+        const st = document.getElementById("st-" + idx);
+        if (!st) return;
+        st.className = "st-" + type;
+        st.textContent = msg;
+      }
+
+      function syncEditorFromState(idx) {
+        const s = lessonState[idx];
+        const ta = document.getElementById("ta-" + idx);
+        if (!ta) return;
+        const entries = Object.entries(s)
+          .filter(([k]) => FLEX_CSS_PROPS.includes(k))
+          .map(([k, v]) => `    ${k}: '${v}',`)
+          .join("\n");
+        ta.value = `const styles = StyleSheet.create({\n  container: {\n    flex: 1,\n${entries}\n  },\n});`;
+        syncLines(idx);
+      }
+
+      function parseStyles(code) {
+        const result = {};
+        const re = /(\w+)\s*:\s*['"]?([^'",\n\r}]+)['"]?/g;
+        let m;
+        while ((m = re.exec(code)) !== null) {
+          const k = m[1].trim(),
+            v = m[2].trim().replace(/['"]/g, "");
+          if (FLEX_CSS_PROPS.includes(k)) result[k] = v;
+        }
+        return result;
+      }
+
+      function exReset(idx) {
+        const yours = document.getElementById("ex-yours-" + idx);
+        if (yours) {
+          yours.style.flexDirection = "column";
+          yours.style.justifyContent = "flex-start";
+          yours.style.alignItems = "flex-start";
+          yours.style.flexWrap = "nowrap";
+          yours.style.gap = "6px";
+        }
+        const fbk = document.getElementById("ex-fbk-" + idx);
+        if (fbk) {
+          fbk.className = "ex-fbk";
+          fbk.textContent = "";
+        }
+      }
+
+      function exCheck(idx) {
+        const ex = LESSONS[idx].exercise;
+        const yours = document.getElementById("ex-yours-" + idx);
+        const fbk = document.getElementById("ex-fbk-" + idx);
+        if (!yours || !fbk) return;
+        const ta = document.getElementById("ta-" + idx);
+        if (ta) {
+          const parsed = parseStyles(ta.value);
+          for (const [k, v] of Object.entries(parsed)) {
+            try {
+              yours.style[k] = v;
+            } catch (e) {}
+          }
+        }
+        const cs = getComputedStyle(yours);
+        const target = ex.target;
+        const checks = ex.testProps.map((prop) => {
+          const cssP = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+          const tval = (target[prop] || "").replace(/px/g, "").trim();
+          const yval = (cs.getPropertyValue(cssP) || "")
+            .replace(/px/g, "")
+            .trim();
+          if (
+            prop.startsWith("flex-") ||
+            prop.startsWith("flexGrow-") ||
+            prop.startsWith("flexShrink-")
+          ) {
+            const letter = prop.split("-")[1];
+            const i = "abcde".indexOf(letter);
+            const item = document.getElementById(`exy-${idx}-${i}`);
+            if (!item) return false;
+            const ics = getComputedStyle(item);
+            const iprop = prop.startsWith("flex-")
+              ? "flex"
+              : prop.startsWith("flexGrow-")
+                ? "flex-grow"
+                : "flex-shrink";
+            const ival = ics.getPropertyValue(iprop).split(" ")[0];
+            return ival === tval;
+          }
+          if (prop === "gap") return parseInt(yval) === parseInt(tval);
+          return (
+            yval === tval || yval.replace(" ", "") === tval.replace(" ", "")
+          );
+        });
+        const passed = checks.every(Boolean);
+        fbk.className = "ex-fbk " + (passed ? "fbk-ok" : "fbk-err");
+        fbk.textContent = passed
+          ? "✓ Perfeito! Layout correto. Você pode avançar."
+          : `✗ Ainda não está certo. Verifique: ${ex.testProps.join(", ")}`;
+        if (passed) markDone(idx);
+      }
+
+      function exHint(idx) {
+        const ex = LESSONS[idx].exercise;
+        const fbk = document.getElementById("ex-fbk-" + idx);
+        if (!fbk) return;
+        const hints = ex.testProps
+          .map((p) => `${p}: '${ex.target[p] || "?"}'`)
+          .join(" · ");
+        fbk.className = "ex-fbk fbk-err";
+        fbk.textContent = "💡 Dica: você precisa definir → " + hints;
+      }
+
+      function nextLesson(idx) {
+        markDone(idx);
+        if (idx < LESSONS.length - 1) {
+          goTo(idx + 1);
+        } else {
+          const mc = document.getElementById("main-content");
+          mc.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;animation:fu .4s ease both">
+              <div style="font-size:3.5rem;margin-bottom:1rem">✦</div>
+              <h2 style="font-family:var(--fd);font-size:2.6rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.8rem;color:var(--text)">Aula concluída!</h2>
+              <p style="color:var(--muted2);max-width:440px;margin-bottom:2.2rem;line-height:1.75;font-size:16px">Você completou todos os tópicos de Flexbox do React Native. Agora é hora de praticar construindo layouts reais.</p>
+              <div style="display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center">
+                <button onclick="goTo(0)" style="font-size:14px;padding:12px 26px;border-radius:var(--r);border:1.5px solid var(--border);color:var(--text);background:var(--card);cursor:pointer;font-family:var(--fb);font-weight:500;box-shadow:var(--shadow)">↺ Revisar tudo</button>
+                <button onclick="goTo(6)" style="font-size:14px;padding:12px 26px;border-radius:var(--r);background:var(--accent);border:none;color:#fff;cursor:pointer;font-family:var(--fb);font-weight:600;box-shadow:0 4px 14px rgba(37,99,235,.3)">→ Layouts Reais</button>
+              </div>
+            </div>`;
+          document
+            .querySelectorAll(".nav-item")
+            .forEach((n) => n.classList.remove("active"));
+        }
+      }
+    </script>
+  </body>
+</html>
